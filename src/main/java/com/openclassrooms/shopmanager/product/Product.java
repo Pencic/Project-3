@@ -9,14 +9,14 @@ import org.hibernate.validator.constraints.Range;
 public class Product {
 
     private Long id;
-    @NotNull
+    @NotBlank
     private String name;        // Required
     private String description;
     private String details;
-    @NotBlank
-    @Range(min=1 , max=2147483647 )
+    @NotNull
+    @Range(min=1 , max=2147483647)
     private Integer quantity;   // Required, Integer, Greater than zero
-    @NotBlank
+    @NotNull
     @Positive
     private Double price;       // Required, Numeric, Greater than zero
 
