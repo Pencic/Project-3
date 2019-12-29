@@ -1,12 +1,23 @@
 package com.openclassrooms.shopmanager.product;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
+import org.hibernate.validator.constraints.Range;
+
 public class Product {
 
     private Long id;
+    @NotNull
     private String name;        // Required
     private String description;
     private String details;
+    @NotBlank
+    @Range(min=1 , max=2147483647 )
     private Integer quantity;   // Required, Integer, Greater than zero
+    @NotBlank
+    @Positive
     private Double price;       // Required, Numeric, Greater than zero
 
     public Long getId() {
