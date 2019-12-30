@@ -38,7 +38,7 @@ public class OrderService {
     public void saveOrder(Order order)
     {
         orderRepository.save(order);
-        productService.updateProductQuantities();
+        productService.updateProductQuantities(cartService);
     }
 
 
