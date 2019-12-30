@@ -40,7 +40,7 @@ public class ProductService {
         return productRepository.findById(productId).get();
     }
 
-    public void createProduct(Product productModel){
+    public ProductEntity createProduct(Product productModel){
         ProductEntity product = new ProductEntity();
         product.setDescription(productModel.getDescription());
         product.setDetails(productModel.getDetails());
@@ -48,7 +48,7 @@ public class ProductService {
         product.setPrice(productModel.getPrice());
         product.setQuantity(productModel.getQuantity());
 
-        productRepository.save(product);
+       return productRepository.save(product);
     }
 
     public void deleteProduct(Long productId){
@@ -58,7 +58,7 @@ public class ProductService {
         productRepository.deleteById(productId);
     }
 
-    public void updateProductQuantities(){
+    public void updateProductQuantities(CartService cartService){
 
         for (CartLine cartLine : cartService.getCartLineList()) {
             Optional<ProductEntity> productOptional = productRepository.findById(cartLine.getProduct().getId());
