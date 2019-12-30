@@ -1,15 +1,5 @@
 package com.openclassrooms.shopmanager.product;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -17,7 +7,15 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.openclassrooms.shopmanager.order.Cart
+import com.openclassrooms.shopmanager.cart.CartService;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
 
 /**
  * Take this test method as a template to write your test methods for ProductService and OrderService.
@@ -57,43 +55,44 @@ public class ProductServiceTest {
     }
     
     @Test
-    public void getAllAdminProducts() {
-    	ProductEntity product1 = new ProductEntity();
+    public void getAllAdminProducts_DbHasData_allDataReturned() {
+
+        ProductEntity product1 = new ProductEntity();
         product1.setId(1L);
         product1.setName("First product");
 
         ProductEntity product2 = new ProductEntity();
         product2.setId(2L);
-        product2.setName("First product");
-        
-        when(productRepository.findAllByOrderByIdDesc()).thenReturn(Arrays.asList(product1 , product2));
-        
+        product2.setName("Second product");
+
+        when(productRepository.findAllByOrderByIdDesc()).thenReturn(Arrays.asList(product1, product2));
+
         List<ProductEntity> products = productService.getAllAdminProducts();
 
         assertEquals(2, products.size());
         assertEquals(1L, products.get(0).getId() , 0);
         assertEquals(2L, products.get(1).getId() , 0);
+    }   
+    
+    @Test
+    public void getAllProductById_productReturnedById() { 
+    	
+    	ProductEntity product1 = new ProductEntity();
+    	product1.setId(1L);
+    	product1.setPrice(25.0);
+    	
+    	when(productRepository.findById(1L)).thenReturn(Optional.of(product1));
+    	
+    	ProductEntity singleProductReturned = productService.getByProductId(1L);
+    	
+    	assertEquals(1L, singleProductReturned.getId() , 0);
+    	assertEquals(25.0, singleProductReturned.getPrice() , 0);
+    	
     }
     
     @Test
-	public void updateProductQuantities() {
-
-		ProductEntity product = new ProductEntity();
-		product.setId(1L);
-		product.setName("First product");
-		product.setQuantity(10);
-
-		Cart cart = new Cart();
-		cart.addItem(product, 1);
-
-		when(productRepository.findById(1L)).thenReturn(Optional.of(product));
-		productService.updateProductQuantities(cart);
-		verify(productRepository, times(1)).save(product);
-
-	}
-    
-    @Test
-    public void createProductTest() {
+    public void createProduct_returncreatedProduct() {
+    	
     	ProductEntity productEntity = new ProductEntity();
     	productEntity.setId(1L);
     	productEntity.setPrice(32.50);
@@ -121,14 +120,36 @@ public class ProductServiceTest {
         assertEquals("54 inches long", createdProduct.getDetails());
         assertEquals("A20 Samsung", createdProduct.getName());
         assertEquals(40, createdProduct.getQuantity(), 0);
+        
+  }
+    
+    @Test
+    public void deletingExsitingProduct_successfullyDeletingProductById() {
+    	
+    	Long productId = 1L;
+    	
+		productRepository.deleteById(productId);
+
+		Mockito.verify(productRepository, times(1)).deleteById(productId);	
+		
     }
     
     @Test
-    public void deleteProductTest() {
-    	Long productIdTest = 1L;
-    	
-        productService.deleteProduct(productIdTest);
-        verify(productRepository, times(1)).deleteById(productIdTest);
+    public void updateProductQuantities_successfullyUpdateProductQuantities() {
+	  
+    	ProductEntity product = new ProductEntity();
+		product.setId(1L);
+		product.setQuantity(25);
+
+		CartService cartService = new CartService();
+		cartService.addItem(product, 1);
+		
+		when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+
+		productService.updateProductQuantities(cartService);
+
+		Mockito.verify(productRepository, times(1)).save(product);
+		
     }
-        
 }
+
