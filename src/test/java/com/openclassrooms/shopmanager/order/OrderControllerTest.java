@@ -67,10 +67,6 @@ private MockMvc mockMvc;
 		productRepository.delete(product);
 	}
 	
-
-
-
-
        //Sample Method for you
        @Test
        public void testAddToCart() throws Exception {
@@ -80,11 +76,9 @@ private MockMvc mockMvc;
               .andExpect(view().name("redirect:/order/cart"))
               .andExpect(model().errorCount(0))
               .andExpect(status().is3xxRedirection())
-              .andExpect(redirectedUrl("/order/cart"));    
-              
+              .andExpect(redirectedUrl("/order/cart"));                  
        }
-
-
+       
        //Write other test methods here
        @Test 
        public void removeFromCartTest() throws Exception {
@@ -116,9 +110,6 @@ private MockMvc mockMvc;
     				.andExpect(status().isOk())
     			    .andExpect(model().errorCount(1));
        }
-
-
-
 
 }
 	
