@@ -54,10 +54,55 @@ public class ProductControllerTest {
 	@Test
 	public void createValidProduct() throws Exception {
 		mockMvc.perform(post("/admin/product").param("name", "Nokia").param("price", "2.0").param("quantity", "10"))
-				.andExpect(view().name("redirect:/admin/products")).andExpect(model().errorCount(0))
-				.andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/admin/products"));
+				.andExpect(view().name("redirect:/admin/products"))
+				.andExpect(model().errorCount(0))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(redirectedUrl("/admin/products"));
 	}
-
-
+	
+	@Test
+	public void missingNameTest() throws Exception {
+		mockMvc.perform(post("/admin/product")
+				.param("price", "1.0")
+				.param("quantity", "1"))
+				.andExpect(view().name("product"))
+				.andExpect(model().errorCount(1))
+				.andExpect(model().attributeHasFieldErrors("product", "name"))
+				.andExpect(status().isOk());
 		
+	}
+	
+    @Test
+   public void missingPriceTest() throws Exception {
+    	mockMvc.perform(post("/admin/product")
+				.param("name", "Nokia")
+				.param("quantity", "10"))
+				.andExpect(view().name("product"))
+				.andExpect(model().errorCount(1))
+				.andExpect(model().attributeHasFieldErrors("product", "price"))
+				.andExpect(status().isOk());
+   }
+   
+    @Test
+   public void missingQuantitnyTest() throws Exception {
+    	mockMvc.perform(post("/admin/product")
+				.param("price", "3.0")
+				.param("name", "Nokia"))
+				.andExpect(view().name("product"))
+				.andExpect(model().errorCount(1))
+				.andExpect(model().attributeHasFieldErrors("product", "quantity"))
+				.andExpect(status().isOk());
+   }
+    
+    @Test
+    public void invalidPriceTest() throws Exception {
+    	mockMvc.perform(post("/admin/product")
+    			.param("name", "Nokia")
+				.param("price", "-1.0")
+				.param("quantity", "1"))
+				.andExpect(view().name("product"))
+				.andExpect(model().errorCount(1))
+				.andExpect(model().attributeHasFieldErrors("product", "price"))
+				.andExpect(status().isOk());
+    }
 }
