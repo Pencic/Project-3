@@ -14,7 +14,7 @@ public class Product {
     private String description;
     private String details;
     @NotNull
-    @Range(min=1 , max=2147483647)
+    @Range(min=01 , max=2147483647)
     private Integer quantity;   // Required, Integer, Greater than zero
     @NotNull
     @Positive
